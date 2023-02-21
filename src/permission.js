@@ -8,7 +8,7 @@ import { isRelogin } from '@/utils/request'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/register', '/']
+const whiteList = ['/system/login', '/system/register', '/']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
@@ -45,7 +45,6 @@ router.beforeEach((to, from, next) => {
       // 在免登录白名单，直接进入
       next()
     } else {
-      console.log("sss")
       next(`/`) // 否则全部重定向到登录页
       NProgress.done()
     }

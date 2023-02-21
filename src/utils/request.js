@@ -6,6 +6,7 @@ import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from "@/utils/dns";
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
+import { setWebToken } from './auth'
 
 let downloadLoadingInstance;
 // 是否显示重新登录
@@ -17,7 +18,7 @@ const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   baseURL: process.env.VUE_APP_BASE_API,
   // 超时
-  timeout: 10000
+  timeout: 100000
 })
 
 // request拦截器
@@ -51,7 +52,7 @@ service.interceptors.request.use(config => {
       const s_time = sessionObj.time;                // 请求时间
       const interval = 1000;                         // 间隔时间(ms)，小于此时间视为重复提交
       if (s_data === requestObj.data && requestObj.time - s_time < interval && s_url === requestObj.url) {
-        const message = '数据正在处理，请勿重复提交';
+        const message = 'Data is being processed, please do not resubmit';
         console.warn(`[${s_url}]: ` + message)
         return Promise.reject(new Error(message))
       } else {
@@ -98,6 +99,9 @@ service.interceptors.response.use(res => {
       Notification.error({ title: msg })
       return Promise.reject('error')
     } else {
+      if (res.data.refresh_token) {
+        setWebToken(res.data.refresh_token);
+      }
       return res.data
     }
   },
@@ -105,11 +109,11 @@ service.interceptors.response.use(res => {
     console.log('err' + error)
     let { message } = error;
     if (message == "Network Error") {
-      message = "后端接口连接异常";
+      message = "Network Error";
     } else if (message.includes("timeout")) {
-      message = "系统接口请求超时";
+      message = "Timeout";
     } else if (message.includes("Request failed with status code")) {
-      message = "系统接口" + message.substr(message.length - 3) + "异常";
+      message = "System " + message.substr(message.length - 3) + " exception";
     }
     Message({ message: message, type: 'error', duration: 5 * 1000 })
     return Promise.reject(error)

@@ -42,12 +42,12 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/login',
+    path: '/system/login',
     component: () => import('@/views/login'),
     hidden: true
   },
   {
-    path: '/register',
+    path: '/system/register',
     component: () => import('@/views/register'),
     hidden: true
   },
@@ -62,21 +62,21 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/index',
+    path: '',
+    component: () => import('@/views/web/index'),
+    name: ''
+  },
+  {
+    path: '/system',
     component: Layout,
     children: [
       {
-        path: '',
+        path: '/index',
         component: () => import('@/views/index'),
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
-  },
-  {
-    path: '',
-    component: () => import('@/views/web/index'),
-    name: ''
   },
   {
     path: '/user',
