@@ -144,6 +144,7 @@
           <!--  底部  -->
           <div class="el-login-footer">
             <span>Copyright © 2022-{{new Date().getFullYear()}} root-servers.world All Rights Reserved.</span>
+            <el-link class="icp-link" :underline="false" href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2021027560号</el-link>
           </div>
         </div>
         <div class="auth-wrapper" v-if="isAuth">
@@ -447,6 +448,7 @@
           <!--  底部  -->
           <div class="el-login-footer">
             <span>Copyright © 2022-{{new Date().getFullYear()}} root-servers.world All Rights Reserved.</span>
+            <el-link class="icp-link" :underline="false" href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2021027560号</el-link>
           </div>
         </div>
         <div class="auth-wrapper" v-if="isAuth">
@@ -1263,9 +1265,12 @@ export default {
         }
       }
       .el-login-footer {
-        min-width: 100%;
-        height: 40px;
-        line-height: 40px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        overflow: hidden;
         position: absolute;
         bottom: 0;
         text-align: center;
@@ -1273,6 +1278,12 @@ export default {
         font-family: Arial;
         font-size: 12px;
         letter-spacing: 1px;
+        .icp-link {
+          font-size: 12px;
+        }
+        .icp-link :hover {
+          color: #707070;
+        }
       }
     }
     .auth-wrapper{
