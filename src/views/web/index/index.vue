@@ -666,6 +666,7 @@ import "prismjs/themes/prism-tomorrow.css";
 import { listDomainName, addDomainName, updateDnssec, listDomainNameSimpleZone, listDomainNameZoneGeo, getDomainNameZoneInfo, updateDomainNameZone, deleteDomainNameZone, addDomainNameZone, deleteDomainName } from '@/api/web/domainName'
 import { checkRegister, register, checkReset, reset, login, auth, logout } from '@/api/web/login'
 import { setWebToken, removeWebToken, getWebToken } from '@/utils/auth'
+import punycode from 'punycode'
 
 export default {
   components: {
@@ -700,7 +701,7 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      zoneFile: 'root-servers.world.\t0\tIN\tSOA\ta.root-servers.world. info\\@root-servers.world. 0 0 0 0 0\nroot-servers.world.\t0\tIN\tNS\ta.root-servers.world.\nroot-servers.world.\t0\tIN\tNS\tb.root-servers.world.',
+      zoneFile: 'root-servers.world.\t0\tIN\tSOA\ta.root-servers.world. info@root-servers.world. 0 0 0 0 0\nroot-servers.world.\t0\tIN\tNS\ta.root-servers.world.\nroot-servers.world.\t0\tIN\tNS\tb.root-servers.world.',
       domainNameList: [],
       domainNameTotal: 0,
       showAddDomainName: false,
@@ -924,7 +925,23 @@ export default {
             location.reload();
           } else {
             if (res.data.code == 0) {
-              this.zoneFile = res.data.zone;
+              this.zoneFile = ""
+              let zoneSection = res.data.zone.split("\n");
+              let zoneSectionLength = zoneSection.length;
+              for (let index = 0; index < zoneSectionLength - 1; index++) {
+                let sectionArray = zoneSection[index].trim().split(/\s+/);
+                let line = "";
+                sectionArray.forEach(section => {
+                  if (section.indexOf("@") < 0) {
+                    line += (punycode.toUnicode(section) + "\t");
+                  } else {
+                    let mailSection = section.split("\\@");
+                    line += ((punycode.toUnicode(mailSection[0]) + "@" + punycode.toUnicode(mailSection[1])) + "\t");
+                  }
+                });
+                line += "\n";
+                this.zoneFile += line;
+              }
               this.currentEditZone = zone;
               if (mobile) {
                 this.showMobileAddZoneCode = true;
@@ -953,7 +970,23 @@ export default {
           location.reload();
         } else {
           if (res.data.code == 0) {
-            this.zoneFile = res.data.zone;
+            this.zoneFile = ""
+            let zoneSection = res.data.zone.split("\n");
+            let zoneSectionLength = zoneSection.length;
+            for (let index = 0; index < zoneSectionLength - 1; index++) {
+              let sectionArray = zoneSection[index].trim().split(/\s+/);
+              let line = "";
+              sectionArray.forEach(section => {
+                if (section.indexOf("@") < 0) {
+                  line += (punycode.toUnicode(section) + "\t");
+                } else {
+                  let mailSection = section.split("\\@");
+                  line += ((punycode.toUnicode(mailSection[0]) + "@" + punycode.toUnicode(mailSection[1])) + "\t");
+                }
+              });
+              line += "\n";
+              this.zoneFile += line;
+            }
           } else {
             this.$modal.msgError(res.data.message);
           }
@@ -1086,7 +1119,6 @@ export default {
 
     clickAddDomain(mobile) {
       this.mobile = mobile;
-      console.log(this.mobile)
       this.showAddDomainName = true;
     },
 
@@ -1110,6 +1142,11 @@ export default {
         } else {
           this.domainNameTotal = res.total;
           this.domainNameList = res.rows;
+          if (this.domainNameList.length) {
+            this.domainNameList.forEach(domainName => {
+              domainName.domainName = punycode.toUnicode(domainName.domainName);
+            })
+          }
         }
       });
     },
