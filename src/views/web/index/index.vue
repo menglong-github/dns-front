@@ -638,7 +638,7 @@
       :visible.sync="showAddZone"
       :width="mobile ? '100%' : '30%'">
       <div>
-        <el-select v-model="currentAddZoneGeoCode" placeholder="Please select Geo">
+        <el-select v-model="currentAddZoneGeoCode" filterable placeholder="Please select Geo">
           <el-option
             v-for="geo in geoList"
             :key="geo.value"
@@ -842,8 +842,6 @@ export default {
           this.operationDomainNameZoneSimpleList.forEach(zone => {
             if (zone.geoCode == geo.value) {
               geo.disabled = true;
-            } else {
-              geo.disabled = false;
             }
           })
         });
