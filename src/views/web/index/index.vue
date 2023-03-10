@@ -701,7 +701,7 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      zoneFile: 'root-servers.world.\t0\tIN\tSOA\ta.root-servers.world. info@root-servers.world. 0 0 0 0 0\nroot-servers.world.\t0\tIN\tNS\ta.root-servers.world.\nroot-servers.world.\t0\tIN\tNS\tb.root-servers.world.',
+      zoneFile: 'root-servers.world.\t0\tIN\tSOA\ta.root-servers.world. info@root-servers.world. 0 0 0 0 0\nroot-servers.world.\t0\tIN\tNS\ta.root-servers.world.\nroot-servers.world.\t0\tIN\tNS\tb.root-servers.world.\n;Edit your DNS resolution records like editing a zone file',
       domainNameList: [],
       domainNameTotal: 0,
       showAddDomainName: false,
